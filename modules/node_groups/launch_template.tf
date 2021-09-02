@@ -64,7 +64,7 @@ resource "aws_launch_template" "workers" {
   }
 
   dynamic "metadata_options" {
-    for_each = lookup(each.value, "metadata_options", [])
+    for_each = lookup(each.value, "metadata_options", null) != null ? [lookup(each.value, "metadata_options", null)] : []
     content {
       http_endpoint               = lookup(metadata_options.value, "http_endpoint", null)
       http_tokens                 = lookup(metadata_options.value, "http_tokens", null)
