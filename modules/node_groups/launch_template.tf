@@ -63,10 +63,13 @@ resource "aws_launch_template" "workers" {
     ])
   }
 
-  metadata_options {
-    http_endpoint               = lookup(each.value, "metadata_http_endpoint", "enabled")
-    http_tokens                 = lookup(each.value, "metadata_http_tokens", null)
-    http_put_response_hop_limit = lookup(each.value, "metadata_http_put_response_hop_limit", null)
+  dynamic "metadata_options" {
+    for_each = lookup(each.value, "metadata_options", [])
+    content {
+      http_endpoint               = lookup(metadata_options.value, "http_endpoint", null)
+      http_tokens                 = lookup(metadata_options.value, "http_tokens", null)
+      http_put_response_hop_limit = lookup(metadata_options.value, "http_put_response_hop_limit", null)
+    }
   }
 
   # if you want to use a custom AMI
